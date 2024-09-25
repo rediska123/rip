@@ -1,0 +1,23 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'cart.css' %}">
+	<title>{% block title %}{% endblock %}</title>
+    {% block style %}{% endblock %}
+</head>
+<body class="pass-body">
+	  <!-- Хедер одинаковый для всех страниц -->
+      <header class="d-flex flex-wrap justify-content-center py-3 mb-4 pass-header">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+          <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+          <span class="fs-4" style="color:#e8ebf1">ООО ПродажаБилетов</span>
+        </a>
+      </header>
+    {% block content %}{% endblock %}
+</body>
+</html>

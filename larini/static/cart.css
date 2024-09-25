@@ -1,0 +1,44 @@
+.pass-card {
+	border-radius: 18px;
+	background: #002e4d;
+	color:#e8ebf1;
+	border: 1px solid rgb(255,255,255, .04);
+}
+
+
+.pass-img {
+	--bs-border-radius:18px;
+	--bs-card-inner-border-radius:18px;
+}
+
+
+.pass-body {
+	background:#001f33;
+}
+
+.pass-header {
+	background: #002e4d; 
+	color:#e8ebf1;
+	border: 1px solid rgb(255,255,255, .04);
+}
+
+.pass-link {
+	color:#0099ff;
+	border-radius: 14px;
+}
+
+.pass-active-link {
+	--bs-nav-pills-link-active-bg:#0099ff;
+	border:0;
+}
+
+.pass-button {
+	background:#0099ff;
+	border-radius: 14px;
+	border:0;
+}
+
+.container {
+    background: #001f33;
+    border: 0;
+}

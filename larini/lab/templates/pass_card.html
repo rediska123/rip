@@ -1,0 +1,11 @@
+<div class="col">
+    <div class="card pass-card">
+      <img src="{{element.image}}" alt="Название абонемента" class="bd-placeholder-img card-img-top pass-img"/>
+      <div class="card-body">
+        <h5 class="card-title">{{element.name}}</h5>
+        <p class="card-text">{{element.description}}</p>
+        <span class="h3 float-start" style="color:white;">{{element.price}} P</span>
+        <a href="{% url 'pass_url' element.id %}" class="btn btn-primary float-end pass-button">Подробнее</a>
+      </div>
+    </div>
+  </div>

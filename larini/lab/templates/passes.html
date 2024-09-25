@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+	Абонементы
+{% endblock %}
+
+
+{% block content %}
+	<div class="container">
+	  <!-- Шапка с поиском и корзиной -->
+      <div class="card pass-card mb-4">
+	    <div class="card-body">
+		  <form class="float-start row">
+		  <div class="col-auto">
+		    <input type="range" class="form-range" min="0" max="2000" step="10" id="pass-price" name="pass-price" value="{{searched_price}}">
+	      </div>
+		  <div class="col-auto">
+			<button type="submit" class="btn btn-primary pass-button">Отправить</button>
+		  </div>
+		  </form>
+	    <a class="btn btn-primary float-end pass-button" href="/cart/0">
+		  Корзина <span class="badge text-bg-secondary">{{cart}}</span>
+	    </a>
+		</div>
+	  </div>
+	  <!-- Карточки -->
+	  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+		{% for pass in data %}
+                {% include 'pass_card.html' with element=pass %}
+                {% empty %}
+                    <div class="card pass-card mb-4">
+					<div class="card-body">
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item pass-card h5">Список пуст</li>
+					</ul>
+
+					</div>
+					</div>
+        {% endfor %}
+	  </div>
+	</div>
+{% endblock %}
+
+<!-- Правки
+ 1. В фигме увеличить полотно вниз сделать несколько карточек в заявках
+ 2. Количество в корзине справа
+ 3. В корзине сделать сверху ФИО и месяц
+ 4. Ветка SSR  (или как-то так) в гите
+ Сказал без гита следующую не примет-->
