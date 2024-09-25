@@ -1,15 +1,15 @@
 <div class="card mb-3 pass-card">
-    <div class="row g-0">
-      <div class="col-md-4">
-        <img src="{{element.image}}" class="img-fluid rounded-start pass-img" alt="...">
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title">{{element.name}}</h5>
-          <h4 class="card-text">{{element.price}}Р</h4>
-          <p class="card-text">{{element.amount}} Шт</p>
-          <p class="card-text">{{element.description}}</p>
-        </div>
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{element.image}}" class="img-fluid rounded-start pass-img" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{element.name}}</h5>
+        <h4 class="card-price">{{element.price}}Р</h4>
+          <p class="card-desctiption">{{element.description}}</p>
+        <p class="card-amount text-end mb-0">{{element.amount}} Шт</p>
       </div>
     </div>
   </div>
+</div>

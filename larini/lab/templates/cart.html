@@ -9,7 +9,18 @@
 
 {% block content %}
 	<div class="container">
-	  
+		<div class="card pass-card mb-4">
+			<div class="card- body">
+				<div class="input-group mb-3 card-input" style="padding: 15px 10px 0px 10px">
+					<span class="input-group-text" id="basic-addon1">ФИО</span>
+					<input type="text" class="form-control" aria-label="Client_username" aria-describedby="basic-addon1">
+				</div>
+				<div class="input-group mb-3 card-input" style="padding: 0px 10px 0px 10px">
+					<span class="input-group-text" id="basic-addon1">Дата</span>
+					<input type="text" class="form-control" aria-label="Order_date" aria-describedby="basic-addon1">
+				</div>
+		</div>
+	</div>
 	  <!-- Карточки -->
 	  <div>
 		{% for pass in items %}

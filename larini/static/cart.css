@@ -42,3 +42,17 @@
     background: #001f33;
     border: 0;
 }
+
+.card-input {
+	--bs-body-bg: #004572; 
+	--bs-border-color: #0259939f;
+	--bs-body-color: #e8ebf1;
+	--bs-tertiary-bg: #0099ff;
+	--input-color: #ff0000;
+}
+
+.card-input input:focus {
+    border-color: #0099ff;
+}
+  
+  
