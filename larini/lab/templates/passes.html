@@ -20,9 +20,15 @@
 			<button type="submit" class="btn btn-primary pass-button">Отправить</button>
 		  </div>
 		  </form>
-	    <a class="btn btn-primary float-end pass-button" href="/cart/0">
-		  Корзина <span class="badge text-bg-secondary">{{cart}}</span>
-	    </a>
+		{% if cart_count != 0 %}
+	    	<a class="btn btn-primary float-end pass-button" href="{% url 'pass_cart' cart_id %}"> 
+				Корзина <span class="badge text-bg-secondary">{{cart_count}}</span>
+			</a>
+		{% else %}
+			<a class="btn btn-primary float-end pass-button" href="#"> 
+				Корзина
+			</a>
+		{% endif %}
 		</div>
 	  </div>
 	  <!-- Карточки -->

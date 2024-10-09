@@ -11,19 +11,25 @@
 	<div class="container">
 		<div class="card pass-card mb-4">
 			<div class="card- body">
-				<div class="input-group mb-3 card-input" style="padding: 15px 10px 0px 10px">
-					<span class="input-group-text" id="basic-addon1">ФИО</span>
-					<input type="text" class="form-control" aria-label="Client_username" aria-describedby="basic-addon1">
-				</div>
-				<div class="input-group mb-3 card-input" style="padding: 0px 10px 0px 10px">
-					<span class="input-group-text" id="basic-addon1">Дата</span>
-					<input type="text" class="form-control" aria-label="Order_date" aria-describedby="basic-addon1">
-				</div>
+                <div class="input-group mb-3 card-input" style="padding: 15px 10px 0px 10px">
+				  <span class="input-group-text">ФИО</span>
+	              <input type="text" class="form-control" aria-label="Имя пользователя">
+				  <span class="input-group-text">Дата</span>
+	              <input type="text" class="form-control" aria-label="Сервер">
+                </div>
+  
+		    </div>
+	    </div>
+		<div class="card pass-card mb-4">
+			<div class="card-body">
+				<a class="btn btn-primary float-end pass-button" href="{% url 'del_order' cart_id %}"> 
+					Удалить
+				</a>
+			</div>
 		</div>
-	</div>
 	  <!-- Карточки -->
 	  <div>
-		{% for pass in items %}
+		{% for pass in data %}
                 {% include 'cart_pass_card.html' with element=pass %}
                 {% empty %}
                     <div class="card pass-card mb-4">

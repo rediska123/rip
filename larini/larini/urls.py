@@ -22,7 +22,8 @@ from lab import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.GetPasses),
-    path('pass_url/<int:id>', views.GetPass, name='pass_url'),
-    path('cart/<int:id>', views.GetCart, name='cart'),
-    path('searchPasses', views.searchPasses, name='searchPasses'),
+    path('pass_url/<int:selected_id>', views.GetPass, name='pass_url'),
+    path('cart/<int:id>', views.GetCart, name='pass_cart'),
+    path('add_to_order/', views.AddPassItem),
+    path('pass_cart/<int:selected_id>/del_order/', views.DelPassItem, name='del_order')
 ]
