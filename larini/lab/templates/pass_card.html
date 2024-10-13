@@ -10,7 +10,7 @@
           {% csrf_token %}
           <div class="input-group mb-3 card-input">
             <input type="hidden" value="{{element.id}}" name="selected_pass">
-            <input type="number" class="form-control" aria-label="Имя пользователя получателя" aria-describedby="button-addon2" name="this_pass_count">
+            <input type="number" value="1" class="form-control" aria-label="Имя пользователя получателя" aria-describedby="button-addon2" name="this_pass_count">
             <button class="btn btn-primary pass-button" type="submit" id="button-addon2">Купить</button>
           </div>        
         </form>

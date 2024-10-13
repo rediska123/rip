@@ -1,10 +1,12 @@
 from django.db import models
 
 class PassItem(models.Model):
-    name = models.CharField(max_length=255)  # Предполагаем, что имя - это строка, а не int
+    name = models.CharField(max_length=255, blank=True, null=True)  # Предполагаем, что имя - это строка, а не int
     description = models.TextField(blank=True, null=True)
-    price = models.IntegerField()
+    price = models.IntegerField(blank=True, null=True)
     image = models.TextField(blank=True, null=True)
+    class Meta:
+        managed = False
 
 
 

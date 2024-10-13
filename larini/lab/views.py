@@ -1,35 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
 import datetime
 
-cart_id = [{
-    "customer_name": "Москва ул. Иваново стр. 23/3",
-    "order_date": "8 880 554 54 54",
-    "items": [{
-        "item_id": 1,
-        "amount": 12
-    }, {
-        "item_id": 5,
-        "amount": 3
-    }, {
-        "item_id": 8,
-        "amount": 1
-    }],
-},]
-data = [
-        {'name': 'Автобусы 30 дней', 'description': 'Удобное и доступное передвижение по городу без ограничений.', 'price': 300, 'id': 0, 'image': 'http://localhost:9000/lab1/bus.png'},
-        {'name': 'Автобусы 60 дней', 'description': 'Удобное и доступное передвижение по городу без ограничений.', 'price': 500, 'id': 1, 'image': 'http://localhost:9000/lab1/bus.png'},
-        {'name': 'Автобусы 90 дней', 'description': 'Удобное и доступное передвижение по городу без ограничений.', 'price': 700, 'id': 2, 'image': 'http://localhost:9000/lab1/bus.png'},
-        {'name': 'Метро 30 дней', 'description': 'Самый быстрый и эффективный способ передвижения по городу.', 'price': 400, 'id': 3, 'image': 'http://localhost:9000/lab1/metro.png'},
-        {'name': 'Метро 60 дней', 'description': 'Самый быстрый и эффективный способ передвижения по городу.', 'price': 600, 'id': 4, 'image': 'http://localhost:9000/lab1/metro.png'},
-        {'name': 'Метро 90 дней', 'description': 'Самый быстрый и эффективный способ передвижения по городу.', 'price': 800, 'id': 5, 'image': 'http://localhost:9000/lab1/metro.png'},
-        {'name': 'МЦД 30 дней', 'description': 'Уникальный гибрид пригородного и городского транспорта.', 'price': 500, 'id': 6, 'image': 'http://localhost:9000/lab1/mcd1.png'},
-        {'name': 'МЦД 60 дней', 'description': 'Уникальный гибрид пригородного и городского транспорта.', 'price': 800, 'id': 7, 'image': 'http://localhost:9000/lab1/mcd1.png'},
-        {'name': 'МЦД 90 дней', 'description': 'Уникальный гибрид пригородного и городского транспорта.', 'price': 1000, 'id': 8, 'image': 'http://localhost:9000/lab1/mcd1.png'},
-        {'name': 'Пригородные электрички 30 дней', 'description': 'Быстрый и вместительный транспорт для поездок за город или по области.', 'price': 600, 'id': 9, 'image': 'http://localhost:9000/lab1/elka.png'},
-        {'name': 'Пригородные электрички 60 дней', 'description': 'Быстрый и вместительный транспорт для поездок за город или по области.', 'price': 1000, 'id': 10, 'image': 'http://localhost:9000/lab1/elka.png'},
-        {'name': 'Пригородные электрички 90 дней', 'description': 'Быстрый и вместительный транспорт для поездок за город или по области.', 'price': 1400, 'id': 11, 'image': 'http://localhost:9000/lab1/elka.png'},
-    ]
+from django.db import connection
+
 
 def GetPasses(request):
     pass_price = request.GET.get("pass-price")
@@ -66,6 +40,12 @@ def GetPass(request, selected_id):
         })
     
 def GetCart(request, id):
+    try:
+        ord = PassOrder.objects.get(id=id)
+        if ord.status == 2:
+            raise ord.DoesNotExist 
+    except ord.DoesNotExist:
+        return render(request, 'cart.html', {"error": True, "error_message": "Заказ удален"})
     a = PassOrderItems.objects.filter(pass_order=PassOrder.objects.filter(status=1)[0]).select_related('pass_item')
     final_price = 0
     for i in a:
@@ -86,7 +66,7 @@ def AddPassItem(request):
     if started_order == 0:
         new_order = PassOrder(created_date = datetime.date.today(), status = 1)
         new_order.save()
-    if PassOrderItems.objects.filter(pass_order=PassOrder.objects.filter(status=1)[0]).count() != 0:
+    if PassOrderItems.objects.filter(pass_order=PassOrder.objects.filter(status=1)[0], pass_item=PassItem.objects.filter(id=writing_pass)[0]).count() != 0:
         selected_item = PassOrderItems.objects.filter(pass_order=PassOrder.objects.filter(status=1)[0])[0]
         selected_item.amount += int(writing_count)
         selected_item.save()
@@ -101,6 +81,7 @@ def AddPassItem(request):
     if selected_cart.count() != 0:
         selected_cart_id = selected_cart[0].id
         printed_count = PassOrderItems.objects.filter(pass_order=selected_cart_id).count()
+    
     return render(request, 'passes.html', {
         'data': PassItem.objects.all(),
         'cart_count': printed_count,
@@ -108,15 +89,15 @@ def AddPassItem(request):
     })
 
 def DelPassItem(request, selected_id):
-    selected_order = PassOrder.objects.filter(status=1)[0]
-    selected_order.status = 2
-    selected_order.save()
+    with connection.cursor() as cursor:
+        cursor.execute("UPDATE lab_passorder SET status = 2 WHERE id = %s", [selected_id])
     printed_count = 0
     selected_cart_id = 0
     selected_cart = PassOrder.objects.filter(status=1)
     if selected_cart.count() != 0:
         selected_cart_id = selected_cart[0].id
         printed_count = PassOrderItems.objects.filter(order=selected_cart_id).count()
+    return redirect('/')
     return render(request, 'passes.html', {
         'data': PassItem.objects.all(),
         'cart_count': printed_count,
