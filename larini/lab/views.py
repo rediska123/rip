@@ -55,7 +55,9 @@ def GetCart(request, id):
     return render(request, 'cart.html', {
         'data': PassOrderItems.objects.filter(pass_order=PassOrder.objects.filter(status=1)[0]).select_related('pass_item'),
         'final_price': final_price,
-        'cart_id': id
+        'cart_id': id,
+        'cart_name': ord.name,
+        'cart_phone': ord.phone
     })
 
 def AddPassItem(request):
