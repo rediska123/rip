@@ -3,12 +3,12 @@ from passes.models import *
 
 class ClientCardSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
-    m_username = serializers.CharField(source='moderator.username')
+    moderator = serializers.CharField(source='moderator.username', allow_null=True)
     class Meta:
         # Модель, которую мы сериализуем
         model = PassOrder
         # Поля, которые мы сериализуем
-        fields = ["id", "name", "phone",  "accepted_date", "created_date",  "status", "submited_date", "username", "m_username"]
+        fields = ["id", "name", "phone",  "accepted_date", "created_date",  "status", "submited_date", "username", "moderator"]
 
 
 class PassSerializer(serializers.ModelSerializer):
@@ -40,18 +40,27 @@ class ClientCardDetailsSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    is_staff = serializers.BooleanField(default=False, required=False)
+    is_superuser = serializers.BooleanField(default=False, required=False)
     class Meta:
         # Модель, которую мы сериализуем
-        model = AuthUser
+        model = User
         # Поля, которые мы сериализуем
-        fields = ["username", "password", "email"]
+        fields = ["username", "password", "email", "is_staff", "is_superuser", "first_name", "last_name"]
+
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        if 'password' in validated_data:
+            user.set_password(validated_data['password'])
+            user.save()
+        return user
 
 
 class EditUserSerializer(serializers.ModelSerializer):
     passes = ClientCardPassSerializer(many=True, read_only=True)
     class Meta:
         # Модель, которую мы сериализуем
-        model = AuthUser
+        model = User
         # Поля, которые мы сериализуем
         fields = ["first_name", "last_name", "email", "password", "passes"]
 
