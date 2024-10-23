@@ -33,15 +33,15 @@ def pass_catalog(request):
             passes = PassItem.objects.all()
         serializer = PassSerializer(passes, many=True)
         printed_count = None
-        selected_order_id = None
+        selected_client_card_id = None
         selected_user = user()
-        selected_order = PassOrder.objects.filter(status=1, user=selected_user.id)
-        if selected_order.count() != 0:
-            selected_order_id = selected_order[0].id
-            printed_count = PassOrderItems.objects.filter(pass_order=selected_order_id).count()
+        selected_client_card = PassOrder.objects.filter(status=1, user=selected_user.id)
+        if selected_client_card.count() != 0:
+            selected_client_card_id = selected_client_card[0].id
+            printed_count = PassOrderItems.objects.filter(pass_client_card=selected_client_card_id).count()
         response = {
             "passes": serializer.data,
-            "cart_id": selected_order_id,
+            "cart_id": selected_client_card_id,
             "cart_count": printed_count,
             "user_id": selected_user.id
         }
@@ -98,7 +98,7 @@ def pass_item(request, id):
     
 
 @api_view(["GET", "POST"])
-def pass_orders(request):
+def pass_client_cards(request):
     if request.method == 'GET':
         try:
             parsed_data = JSONParser().parse(request)
@@ -116,12 +116,12 @@ def pass_orders(request):
             orders =  PassOrder.objects.filter(status__gte = 3).order_by('created_date', 'status')
         if orders.count() == 0:
             orders = None
-        serializer = OrderSerializer(orders, many=True)
+        serializer = ClientCardSerializer(orders, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
     elif request.method == 'POST':
         parsed_data = JSONParser().parse(request)
-        serializer = OrderSerializer(data=parsed_data)
+        serializer = ClientCardSerializer(data=parsed_data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK) 
@@ -129,31 +129,31 @@ def pass_orders(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
-def pass_order(request, id):
+def pass_client_card(request, id):
     try: 
-        selected_order = PassOrder.objects.get(id=id) 
+        selected_client_card = PassOrder.objects.get(id=id) 
     except PassOrder.DoesNotExist: 
         return Response(None, status=status.HTTP_200_OK)
     if request.method == 'GET':
-        serializer = OrderDetailsSerializer(selected_order)
+        serializer = ClientCardDetailsSerializer(selected_client_card)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
         parsed_data = JSONParser().parse(request)
-        serializer = EditOrderSerializer(selected_order, data=parsed_data, partial=True) 
+        serializer = EditClientCardSerializer(selected_client_card, data=parsed_data, partial=True) 
         if serializer.is_valid(): 
             serializer.save()
-            serializer = OrderDetailsSerializer(PassOrder.objects.get(id=id))
+            serializer = ClientCardDetailsSerializer(PassOrder.objects.get(id=id))
             return Response(serializer.data) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
     elif request.method == 'DELETE':
-        selected_order.status = 2
-        selected_order.save() 
+        selected_client_card.status = 2
+        selected_client_card.save() 
         return Response({"message": "Order was deleted successfully!"}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
-def add_pass_to_order(request, id):
+def add_pass_to_client_card(request, id):
     parsed_data = JSONParser().parse(request)
     if parsed_data['amount'] == None:
         return Response({"message": "No amount!"}, status=status.HTTP_400_BAD_REQUEST)
@@ -163,18 +163,18 @@ def add_pass_to_order(request, id):
     except PassItem.DoesNotExist:
         return Response({"message": "Product with id={id} not found"}, status=status.HTTP_400_BAD_REQUEST)
     try: 
-        selected_order = PassOrder.objects.get(user=selected_user, status=1) 
+        selected_client_card = PassOrder.objects.get(user=selected_user, status=1) 
     except PassOrder.DoesNotExist: 
-        selected_order = PassOrder(user=selected_user, status=1)
-        selected_order.save()
+        selected_client_card = PassOrder(user=selected_user, status=1)
+        selected_client_card.save()
     try: 
-        selected_order_item = PassOrderItems.objects.get(pass_order=selected_order, pass_item=selected_pass) 
+        selected_client_card_item = PassOrderItems.objects.get(pass_client_card=selected_client_card, pass_item=selected_pass) 
     except PassOrderItems.DoesNotExist: 
-        selected_order_item = PassOrderItems(pass_order=selected_order, pass_item=selected_pass, amount=0)
-    selected_order_item.amount += parsed_data['amount']
-    selected_order_item.save()
-    selected_order_items = PassOrderItems.objects.filter(pass_order=selected_order)
-    serializer = OrderItemSerializer(selected_order_items, many=True)
+        selected_client_card_item = PassOrderItems(pass_client_card=selected_client_card, pass_item=selected_pass, amount=0)
+    selected_client_card_item.amount += parsed_data['amount']
+    selected_client_card_item.save()
+    selected_client_card_items = PassOrderItems.objects.filter(pass_client_card=selected_client_card)
+    serializer = ClientCardPassSerializer(selected_client_card_items, many=True)
     response = serializer.data
     return Response(response, status=status.HTTP_200_OK)
 
@@ -226,49 +226,49 @@ def user_deauth(request):
 
 
 @api_view(["POST"])
-def submit_order(request, id):
+def submit_client_card(request, id):
     try: 
-        selected_order = PassOrder.objects.get(id=id, status=1) 
+        selected_client_card = PassOrder.objects.get(id=id, status=1) 
     except PassOrder.DoesNotExist: 
         return Response({"message": "Order not found"}, status=status.HTTP_400_BAD_REQUEST)
-    if selected_order.name != None and selected_order.phone != None:
-        selected_order.status = 3
-        selected_order.submited_date = datetime.datetime.now()
-        selected_order.save()
-        serializers = OrderDetailsSerializer(selected_order)
+    if selected_client_card.name != None and selected_client_card.phone != None:
+        selected_client_card.status = 3
+        selected_client_card.submited_date = datetime.datetime.now()
+        selected_client_card.save()
+        serializers = ClientCardDetailsSerializer(selected_client_card)
         return Response(serializers.data, status=status.HTTP_200_OK)
     return Response({"message": "Not valid"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
-def accept_order(request, id):
+def accept_client_card(request, id):
     try: 
-        selected_order = PassOrder.objects.get(id=id, status=3) 
+        selected_client_card = PassOrder.objects.get(id=id, status=3) 
     except PassOrder.DoesNotExist: 
         return Response({"message": "Order not found"}, status=status.HTTP_400_BAD_REQUEST)
-    if selected_order.name != None and selected_order.phone != None and selected_order.submited_date != None:
-        selected_order.status = 4
-        selected_order.moderator = AuthUser.objects.get(username="admin")
-        selected_order.accepted_date = datetime.datetime.now()
-        selected_order.save()
-        serializers = OrderSerializer(selected_order)
+    if selected_client_card.name != None and selected_client_card.phone != None and selected_client_card.submited_date != None:
+        selected_client_card.status = 4
+        selected_client_card.moderator = AuthUser.objects.get(username="admin")
+        selected_client_card.accepted_date = datetime.datetime.now()
+        selected_client_card.save()
+        serializers = ClientCardSerializer(selected_client_card)
         return Response(serializers.data, status=status.HTTP_200_OK)
     return Response({"message": "Not valid"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["PUT", "DELETE"])
-def pass_order_item(request, id):
+def pass_client_card_pass(request, id):
     try: 
-        selected_order_pass = PassOrderItems.objects.get(id=id) 
+        selected_client_card_pass = PassOrderItems.objects.get(id=id) 
     except PassOrderItems.DoesNotExist: 
         return Response({"message": "Pass not found"}, status=status.HTTP_400_BAD_REQUEST)
     if request.method == 'PUT':
         parsed_data = JSONParser().parse(request)
-        serializer = OrderItemSerializer(selected_order_pass, data=parsed_data, partial=True)
+        serializer = ClientCardPassSerializer(selected_client_card_pass, data=parsed_data, partial=True)
         if serializer.is_valid():
             serializer.save()
         else:
             return Response({"message": "Not valid"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE':
-        selected_order_pass.delete()
+        selected_client_card_pass.delete()
         return Response({"message": "Deleted succesfuly"}, status=status.HTTP_200_OK)

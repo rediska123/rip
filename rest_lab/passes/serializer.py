@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from passes.models import *
 
-class OrderSerializer(serializers.ModelSerializer):
+class ClientCardSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
     m_username = serializers.CharField(source='moderator.username')
     class Meta:
@@ -19,7 +19,7 @@ class PassSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description", "price", "image", "status"]
 
 
-class OrderItemSerializer(serializers.ModelSerializer):
+class ClientCardPassSerializer(serializers.ModelSerializer):
     pass_name = serializers.CharField(source='pass_item.name')
     pass_price = serializers.CharField(source='pass_item.price')
     class Meta:
@@ -29,8 +29,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ["pass_name", "pass_price", "amount", "id"]
     
 
-class OrderDetailsSerializer(serializers.ModelSerializer):
-    passes = OrderItemSerializer(many=True, read_only=True)
+class ClientCardDetailsSerializer(serializers.ModelSerializer):
+    passes = ClientCardPassSerializer(many=True, read_only=True)
     username = serializers.CharField(source='user.username')
     class Meta:
         # Модель, которую мы сериализуем
@@ -48,7 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class EditUserSerializer(serializers.ModelSerializer):
-    passes = OrderItemSerializer(many=True, read_only=True)
+    passes = ClientCardPassSerializer(many=True, read_only=True)
     class Meta:
         # Модель, которую мы сериализуем
         model = AuthUser
@@ -56,7 +56,7 @@ class EditUserSerializer(serializers.ModelSerializer):
         fields = ["first_name", "last_name", "email", "password", "passes"]
 
 
-class EditOrderSerializer(serializers.ModelSerializer):
+class EditClientCardSerializer(serializers.ModelSerializer):
     passes = PassSerializer(many=True, read_only=True)
     class Meta:
         # Модель, которую мы сериализуем
@@ -64,7 +64,7 @@ class EditOrderSerializer(serializers.ModelSerializer):
         # Поля, которые мы сериализуем
         fields = ["name", "phone", "created_date", "passes"]
 
-class EditOrderItemSerializer(serializers.ModelSerializer):
+class EditClientCardPassSerializer(serializers.ModelSerializer):
     class Meta:
         # Модель, которую мы сериализуем
         model = PassOrderItems

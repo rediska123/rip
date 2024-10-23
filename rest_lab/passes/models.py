@@ -129,7 +129,7 @@ class PassOrder(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(default=1)
     submited_date = models.DateTimeField(blank=True, null=True)
-    user = models.ForeignKey('AuthUser', on_delete=models.DO_NOTHING, null=True, blank=False, related_name='orders')
+    user = models.ForeignKey('AuthUser', on_delete=models.DO_NOTHING, null=True, blank=False, related_name='client_cards')
     moderator = models.ForeignKey('AuthUser', on_delete=models.DO_NOTHING, null=True, blank=True, related_name='m_orders')
 
 
