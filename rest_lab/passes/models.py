@@ -19,6 +19,7 @@ class PassOrder(models.Model):
     submited_date = models.DateTimeField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=False, related_name='client_cards')
     moderator = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='m_orders')
+    payment_number = models.CharField(max_length=20, blank=True, null=True)
 
 
 

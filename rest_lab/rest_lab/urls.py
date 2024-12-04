@@ -26,11 +26,11 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Лабороторное оборудование API",
+      title="Абонементы на транспорт API",
       default_version='v1',
-      description="Апи для оформления закупок лабораторного оборудования",
+      description="Апи для оформления абонемента",
       terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@labeq.ru"),
+      contact=openapi.Contact(email="vasya@pupkin.ru"),
       license=openapi.License(name="BSD License"),
    ),
    public=True,

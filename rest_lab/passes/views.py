@@ -17,6 +17,8 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.permissions import *
 from django.views.decorators.csrf import csrf_exempt
 import uuid
+import hashlib
+import base64
 
 
 # Create your views here.
@@ -50,9 +52,9 @@ def method_permission_classes(classes):
 class pass_catalog(APIView):
     def get(self, request):
         try:
-            parsed_data = JSONParser().parse(request)
-            if parsed_data['price'] != None:
-                passes = PassItem.objects.filter(price__lte = parsed_data['price'])
+            price = request.GET.get("price")
+            if price != None:
+                passes = PassItem.objects.filter(price__lte = price)
             else:
                 passes = PassItem.objects.all()
         except:
@@ -351,6 +353,7 @@ def submit_client_card(request, id):
         selected_client_card.submited_date = datetime.datetime.now()
         selected_client_card.save()
         serializers = ClientCardDetailsSerializer(selected_client_card)
+        
         return Response(serializers.data, status=status.HTTP_200_OK)
     return Response({"message": "Not valid"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -367,6 +370,15 @@ def accept_client_card(request, id):
         selected_client_card.status = 4
         selected_client_card.moderator = user
         selected_client_card.accepted_date = datetime.datetime.now()
+        input_string = f"{selected_client_card.name}{selected_client_card.phone}{selected_client_card.created_date}"
+        hash_object = hashlib.sha256(input_string.encode())
+        hash_base64 = base64.b64encode(hash_object.digest()).decode()
+        prefix = hash_base64[:3].upper()
+        hash_hex = hash_object.hexdigest()
+        hash_int = int(hash_hex, 16)
+        suffix = str(hash_int)[:8]
+        unique_identifier = f"{prefix}{suffix}"
+        selected_client_card.payment_number = unique_identifier
         selected_client_card.save()
         serializers = ClientCardSerializer(selected_client_card)
         return Response(serializers.data, status=status.HTTP_200_OK)
